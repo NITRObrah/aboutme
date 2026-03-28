@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>okliterally</title>
+  <title>???</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -14,29 +14,25 @@
 
     body {
       font-family: 'Quicksand', sans-serif;
-      background: #0d0015;
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, #0d0015 0%, #1a0a2e 50%, #0d0015 100%);
+      background: #0a0012;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      background-blend-mode: overlay;
       min-height: 100vh;
       color: #fff;
-      position: relative;
       overflow-x: hidden;
     }
 
-    /* Side Glow */
+    /* janky side glow thing */
     body::before {
       content: '';
       position: fixed;
       left: 0;
       top: 0;
-      width: 100px;
+      width: 80px;
       height: 100%;
-      background: linear-gradient(90deg, rgba(138, 43, 226, 0.3) 0%, transparent 100%);
+      background: linear-gradient(90deg, rgba(139, 43, 226, 0.2) 0%, transparent 100%);
       pointer-events: none;
       z-index: 1;
-      filter: blur(40px);
     }
 
     body::after {
@@ -44,33 +40,43 @@
       position: fixed;
       right: 0;
       top: 0;
-      width: 100px;
+      width: 80px;
       height: 100%;
-      background: linear-gradient(-90deg, rgba(138, 43, 226, 0.3) 0%, transparent 100%);
+      background: linear-gradient(-90deg, rgba(139, 43, 226, 0.2) 0%, transparent 100%);
       pointer-events: none;
       z-index: 1;
-      filter: blur(40px);
     }
 
-    /* Music Player */
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0012;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #8b5cf6;
+      border-radius: 4px;
+    }
+
+    /* music player */
     .music-player {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       z-index: 1000;
     }
 
     .record {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #a855f7;
-      animation: spin 3s linear infinite;
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+      border: 2px solid #8b5cf6;
+      animation: spin 4s linear infinite;
     }
 
     .record.paused {
@@ -83,31 +89,53 @@
     }
 
     .music-btn {
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       background: #ef4444;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+      transition: transform 0.1s;
     }
 
     .music-btn:hover {
-      transform: scale(1.1);
-      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .music-btn:active {
+      transform: scale(0.95);
     }
 
     .music-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       fill: white;
     }
 
-    /* Particles */
+    .volume-slider {
+      width: 60px;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #3d3d5c;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #a855f7;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* particles */
     #particles {
       position: fixed;
       top: 0;
@@ -118,20 +146,20 @@
       z-index: 0;
     }
 
-    /* Click to Enter Screen */
+    /* enter screen */
     #enter-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #0d0015;
+      background: #0a0012;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
       cursor: pointer;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.4s;
     }
 
     #enter-screen.hidden {
@@ -141,47 +169,45 @@
 
     .enter-btn {
       font-family: 'Quicksand', sans-serif;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       color: #fff;
-      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-      padding: 18px 45px;
-      border-radius: 50px;
+      background: #8b5cf6;
+      padding: 14px 35px;
+      border-radius: 25px;
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+      transition: transform 0.2s;
     }
 
     .enter-btn:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
-    /* Popup */
+    /* popup */
     #popup {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
-      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-      padding: 25px 50px;
-      border-radius: 15px;
-      font-size: 1.8rem;
+      background: #8b5cf6;
+      padding: 20px 40px;
+      border-radius: 12px;
+      font-size: 1.5rem;
       font-weight: 600;
       z-index: 10000;
-      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+      transition: transform 0.3s;
     }
 
     #popup.show {
       transform: translate(-50%, -50%) scale(1);
     }
 
-    /* Main Content */
+    /* main content */
     #main-content {
       opacity: 0;
-      transition: opacity 0.5s ease;
-      padding: 40px 20px;
-      max-width: 550px;
+      transition: opacity 0.4s;
+      padding: 30px 15px;
+      max-width: 480px;
       margin: 0 auto;
       position: relative;
       z-index: 2;
@@ -191,39 +217,38 @@
       opacity: 1;
     }
 
-    /* Profile */
+    /* profile */
     .profile-section {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 25px;
     }
 
     .pfp-container {
       position: relative;
       display: inline-block;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .pfp {
-      width: 130px;
-      height: 130px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #a855f7;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+      border: 3px solid #8b5cf6;
     }
 
     .github-link {
       position: absolute;
-      bottom: 5px;
-      right: 0;
+      bottom: 3px;
+      right: -2px;
       background: #fff;
       border-radius: 50%;
-      width: 35px;
-      height: 35px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
 
     .github-link:hover {
@@ -231,53 +256,56 @@
     }
 
     .github-link svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: #1a0a2e;
     }
 
     .name {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #fff;
+      cursor: pointer;
+      transition: text-shadow 0.2s;
     }
 
-    /* Sections */
+    .name:hover {
+      text-shadow: 0 0 15px rgba(139, 92, 246, 0.7);
+    }
+
+    /* boxes */
     .box {
-      background: rgba(139, 92, 246, 0.08);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(139, 92, 246, 0.2);
+      background: rgba(139, 92, 246, 0.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(139, 92, 246, 0.15);
     }
 
     .section-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       color: #c084fc;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .about-text {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.85);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.8);
     }
 
-    /* Links */
+    /* links */
     .link-item {
       display: block;
-      background: rgba(139, 92, 246, 0.15);
-      padding: 12px 16px;
-      border-radius: 10px;
-      margin-bottom: 8px;
+      background: rgba(139, 92, 246, 0.1);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 6px;
       text-decoration: none;
       color: #fff;
-      transition: all 0.2s ease;
-      border: 1px solid rgba(139, 92, 246, 0.2);
+      transition: background 0.2s, transform 0.15s;
+      border: 1px solid rgba(139, 92, 246, 0.15);
     }
 
     .link-item:last-child {
@@ -285,48 +313,47 @@
     }
 
     .link-item:hover {
-      background: rgba(139, 92, 246, 0.25);
-      transform: translateX(4px);
+      background: rgba(139, 92, 246, 0.2);
+      transform: translateX(3px);
     }
 
     .link-title {
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .link-url {
-      font-size: 0.75rem;
-      opacity: 0.6;
-      margin-top: 2px;
+      font-size: 0.7rem;
+      opacity: 0.5;
+      margin-top: 1px;
     }
 
-    /* Quote */
+    /* quote */
     .quote-box {
-      background: rgba(139, 92, 246, 0.1);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 18px;
+      background: rgba(139, 92, 246, 0.08);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
       text-align: center;
-      border: 1px solid rgba(139, 92, 246, 0.25);
+      border: 1px solid rgba(139, 92, 246, 0.15);
     }
 
     .quote-text {
       font-style: italic;
-      font-size: 1rem;
-      margin-bottom: 8px;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     .quote-author {
       color: #c084fc;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
 
-    /* Dark Humor */
     .dark-humor-text {
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.85);
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
     }
   </style>
 </head>
@@ -339,6 +366,7 @@
       <svg id="pause-icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       <svg id="play-icon" viewBox="0 0 24 24" style="display: none;"><polygon points="5,3 19,12 5,21"/></svg>
     </button>
+    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
   </div>
 
   <!-- Enter Screen -->
@@ -349,7 +377,7 @@
   <!-- Popup -->
   <div id="popup">WAZZUP BEJENG</div>
 
-  <!-- Particles Canvas -->
+  <!-- Particles -->
   <canvas id="particles"></canvas>
 
   <!-- Audio -->
@@ -360,20 +388,16 @@
   <!-- Main Content -->
   <div id="main-content">
     
-    <!-- Profile -->
     <div class="profile-section">
       <div class="pfp-container">
-        <img src="https://image2url.com/r2/default/images/1774658113610-d1cf459e-3ec1-40f8-ba60-954d7fd55076.png" alt="okliterally" class="pfp">
+        <img src="https://image2url.com/r2/default/images/1774658113610-d1cf459e-3ec1-40f8-ba60-954d7fd55076.png" alt="pfp" class="pfp">
         <a href="https://github.com/NITRObrah" target="_blank" class="github-link">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
         </a>
       </div>
-      <h1 class="name">okliterally</h1>
+      <h1 class="name" id="site-title">???</h1>
     </div>
 
-    <!-- About Me -->
     <div class="box">
       <h2 class="section-title">about me</h2>
       <p class="about-text">
@@ -384,7 +408,6 @@
       </p>
     </div>
 
-    <!-- Projects -->
     <div class="box">
       <h2 class="section-title">projects</h2>
       <a href="https://nitrobrah.github.io/testrepo/" target="_blank" class="link-item">
@@ -393,19 +416,16 @@
       </a>
     </div>
 
-    <!-- Quote -->
     <div class="quote-box">
       <p class="quote-text" id="quote-text">"coryxkenshin is literally the best youtuber"</p>
       <p class="quote-author">- okliterally</p>
     </div>
 
-    <!-- Dark Humor -->
     <div class="box">
       <h2 class="section-title">dark humor</h2>
       <p class="dark-humor-text">dildos (jk)</p>
     </div>
 
-    <!-- Sight.w Links -->
     <div class="box">
       <h2 class="section-title">sight.w links</h2>
       <a href="https://nitrobrah.github.io/testrepo/" target="_blank" class="link-item">
@@ -421,7 +441,6 @@
   </div>
 
   <script>
-    // Elements
     const enterScreen = document.getElementById('enter-screen');
     const popup = document.getElementById('popup');
     const mainContent = document.getElementById('main-content');
@@ -432,12 +451,32 @@
     const record = document.getElementById('record');
     const pauseIcon = document.getElementById('pause-icon');
     const playIcon = document.getElementById('play-icon');
+    const volumeSlider = document.getElementById('volume-slider');
+    const siteTitle = document.getElementById('site-title');
 
     let isPlaying = true;
+    let titleClicked = false;
 
-    // Enter screen
-    enterScreen.addEventListener('click', function() {
-      bgMusic.play().catch(e => console.log('Audio play failed:', e));
+    // title click
+    siteTitle.onclick = function() {
+      if (!titleClicked) {
+        siteTitle.textContent = 'thanks for visiting :)';
+        titleClicked = true;
+      } else {
+        siteTitle.textContent = '???';
+        titleClicked = false;
+      }
+    };
+
+    // volume
+    bgMusic.volume = 0.7;
+    volumeSlider.oninput = function() {
+      bgMusic.volume = this.value / 100;
+    };
+
+    // enter screen
+    enterScreen.onclick = function() {
+      bgMusic.play().catch(() => {});
       enterScreen.classList.add('hidden');
       popup.classList.add('show');
       
@@ -445,11 +484,11 @@
         popup.classList.remove('show');
         mainContent.classList.add('visible');
         musicPlayer.style.display = 'flex';
-      }, 2000);
-    });
+      }, 1800);
+    };
 
-    // Music controls
-    musicBtn.addEventListener('click', function() {
+    // music btn
+    musicBtn.onclick = function() {
       if (isPlaying) {
         bgMusic.pause();
         record.classList.add('paused');
@@ -463,9 +502,9 @@
         playIcon.style.display = 'none';
         isPlaying = true;
       }
-    });
+    };
 
-    // Quotes
+    // quotes
     const quotes = [
       "coryxkenshin is literally the best youtuber",
       "i hate this new goguardian update",
@@ -473,17 +512,17 @@
     ];
     let currentQuote = 0;
 
-    quoteText.style.transition = 'opacity 0.3s ease';
+    quoteText.style.transition = 'opacity 0.2s';
     setInterval(() => {
       currentQuote = (currentQuote + 1) % quotes.length;
       quoteText.style.opacity = 0;
       setTimeout(() => {
         quoteText.textContent = '"' + quotes[currentQuote] + '"';
         quoteText.style.opacity = 1;
-      }, 300);
-    }, 5000);
+      }, 200);
+    }, 4000);
 
-    // Particles
+    // particles
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -493,47 +532,30 @@
       canvas.height = window.innerHeight;
     }
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.onresize = resizeCanvas;
 
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2.5 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.speedY = (Math.random() - 0.5) * 0.4;
-        this.opacity = Math.random() * 0.4 + 0.1;
-        this.color = Math.random() > 0.5 ? '167, 139, 250' : '168, 85, 247';
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-      }
-
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(' + this.color + ', ' + this.opacity + ')';
-        ctx.fill();
-      }
-    }
-
-    for (let i = 0; i < 40; i++) {
-      particles.push(new Particle());
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        opacity: Math.random() * 0.3 + 0.1
+      });
     }
 
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
-        p.update();
-        p.draw();
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(139, 92, 246, ' + p.opacity + ')';
+        ctx.fill();
       });
       requestAnimationFrame(animateParticles);
     }
