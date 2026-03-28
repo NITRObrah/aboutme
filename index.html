@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>okliterally</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #0d0015;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #0d0015 0%, #1a0a2e 50%, #0d0015 100%);
+      min-height: 100vh;
+      color: #fff;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Side Glow */
+    body::before {
+      content: '';
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(138, 43, 226, 0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+      filter: blur(40px);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(-90deg, rgba(138, 43, 226, 0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+      filter: blur(40px);
+    }
+
+    /* Music Player */
+    .music-player {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .record {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #a855f7;
+      animation: spin 3s linear infinite;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
+
+    .record.paused {
+      animation-play-state: paused;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .music-btn {
+      width: 40px;
+      height: 40px;
+      background: #ef4444;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .music-btn:hover {
+      transform: scale(1.1);
+      background: #dc2626;
+    }
+
+    .music-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    /* Particles */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Click to Enter Screen */
+    #enter-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0d0015;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: pointer;
+      transition: opacity 0.5s ease;
+    }
+
+    #enter-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .enter-btn {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.3rem;
+      color: #fff;
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+      padding: 18px 45px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Popup */
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+      padding: 25px 50px;
+      border-radius: 15px;
+      font-size: 1.8rem;
+      font-weight: 600;
+      z-index: 10000;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+    }
+
+    #popup.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Main Content */
+    #main-content {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      padding: 40px 20px;
+      max-width: 550px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    #main-content.visible {
+      opacity: 1;
+    }
+
+    /* Profile */
+    .profile-section {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .pfp-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .pfp {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #a855f7;
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+    }
+
+    .github-link {
+      position: absolute;
+      bottom: 5px;
+      right: 0;
+      background: #fff;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .github-link:hover {
+      transform: scale(1.1);
+    }
+
+    .github-link svg {
+      width: 18px;
+      height: 18px;
+      fill: #1a0a2e;
+    }
+
+    .name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Sections */
+    .box {
+      background: rgba(139, 92, 246, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #c084fc;
+      margin-bottom: 12px;
+    }
+
+    .about-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Links */
+    .link-item {
+      display: block;
+      background: rgba(139, 92, 246, 0.15);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .link-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .link-item:hover {
+      background: rgba(139, 92, 246, 0.25);
+      transform: translateX(4px);
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-url {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* Quote */
+    .quote-box {
+      background: rgba(139, 92, 246, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 18px;
+      text-align: center;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .quote-text {
+      font-style: italic;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .quote-author {
+      color: #c084fc;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    /* Dark Humor */
+    .dark-humor-text {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.85);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Music Player -->
+  <div class="music-player" id="music-player" style="display: none;">
+    <img src="https://image2url.com/r2/default/images/1774660498274-33ae8a6c-4d41-4053-a191-c3646fc57cd3.jpeg" alt="music" class="record" id="record">
+    <button class="music-btn" id="music-btn" aria-label="pause">
+      <svg id="pause-icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      <svg id="play-icon" viewBox="0 0 24 24" style="display: none;"><polygon points="5,3 19,12 5,21"/></svg>
+    </button>
+  </div>
+
+  <!-- Enter Screen -->
+  <div id="enter-screen">
+    <button class="enter-btn">click to enter</button>
+  </div>
+
+  <!-- Popup -->
+  <div id="popup">WAZZUP BEJENG</div>
+
+  <!-- Particles Canvas -->
+  <canvas id="particles"></canvas>
+
+  <!-- Audio -->
+  <audio id="bg-music" preload="auto" loop>
+    <source src="https://image2url.com/r2/default/audio/1774658707130-04499d40-db26-495c-a28b-2bc07c9745eb.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Main Content -->
+  <div id="main-content">
+    
+    <!-- Profile -->
+    <div class="profile-section">
+      <div class="pfp-container">
+        <img src="https://image2url.com/r2/default/images/1774658113610-d1cf459e-3ec1-40f8-ba60-954d7fd55076.png" alt="okliterally" class="pfp">
+        <a href="https://github.com/NITRObrah" target="_blank" class="github-link">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+      <h1 class="name">okliterally</h1>
+    </div>
+
+    <!-- About Me -->
+    <div class="box">
+      <h2 class="section-title">about me</h2>
+      <p class="about-text">
+        hii im okliterally aka a 14 y/o girl who just started coding<br>
+        i kno html css n js kinda?? still figuring stuff out lol<br>
+        its actually pretty fun once u get the hang of it<br>
+        anyway thats it bye
+      </p>
+    </div>
+
+    <!-- Projects -->
+    <div class="box">
+      <h2 class="section-title">projects</h2>
+      <a href="https://nitrobrah.github.io/testrepo/" target="_blank" class="link-item">
+        <div class="link-title">test repo</div>
+        <div class="link-url">nitrobrah.github.io/testrepo</div>
+      </a>
+    </div>
+
+    <!-- Quote -->
+    <div class="quote-box">
+      <p class="quote-text" id="quote-text">"coryxkenshin is literally the best youtuber"</p>
+      <p class="quote-author">- okliterally</p>
+    </div>
+
+    <!-- Dark Humor -->
+    <div class="box">
+      <h2 class="section-title">dark humor</h2>
+      <p class="dark-humor-text">dildos (jk)</p>
+    </div>
+
+    <!-- Sight.w Links -->
+    <div class="box">
+      <h2 class="section-title">sight.w links</h2>
+      <a href="https://nitrobrah.github.io/testrepo/" target="_blank" class="link-item">
+        <div class="link-title">testrepo</div>
+        <div class="link-url">nitrobrah.github.io/testrepo</div>
+      </a>
+      <a href="https://broken-wildflower-5961.brayyy316.workers.dev/" target="_blank" class="link-item">
+        <div class="link-title">cloudflare</div>
+        <div class="link-url">broken-wildflower-5961.brayyy316.workers.dev</div>
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // Elements
+    const enterScreen = document.getElementById('enter-screen');
+    const popup = document.getElementById('popup');
+    const mainContent = document.getElementById('main-content');
+    const bgMusic = document.getElementById('bg-music');
+    const quoteText = document.getElementById('quote-text');
+    const musicPlayer = document.getElementById('music-player');
+    const musicBtn = document.getElementById('music-btn');
+    const record = document.getElementById('record');
+    const pauseIcon = document.getElementById('pause-icon');
+    const playIcon = document.getElementById('play-icon');
+
+    let isPlaying = true;
+
+    // Enter screen
+    enterScreen.addEventListener('click', function() {
+      bgMusic.play().catch(e => console.log('Audio play failed:', e));
+      enterScreen.classList.add('hidden');
+      popup.classList.add('show');
+      
+      setTimeout(() => {
+        popup.classList.remove('show');
+        mainContent.classList.add('visible');
+        musicPlayer.style.display = 'flex';
+      }, 2000);
+    });
+
+    // Music controls
+    musicBtn.addEventListener('click', function() {
+      if (isPlaying) {
+        bgMusic.pause();
+        record.classList.add('paused');
+        pauseIcon.style.display = 'none';
+        playIcon.style.display = 'block';
+        isPlaying = false;
+      } else {
+        bgMusic.play();
+        record.classList.remove('paused');
+        pauseIcon.style.display = 'block';
+        playIcon.style.display = 'none';
+        isPlaying = true;
+      }
+    });
+
+    // Quotes
+    const quotes = [
+      "coryxkenshin is literally the best youtuber",
+      "i hate this new goguardian update",
+      "do your math"
+    ];
+    let currentQuote = 0;
+
+    quoteText.style.transition = 'opacity 0.3s ease';
+    setInterval(() => {
+      currentQuote = (currentQuote + 1) % quotes.length;
+      quoteText.style.opacity = 0;
+      setTimeout(() => {
+        quoteText.textContent = '"' + quotes[currentQuote] + '"';
+        quoteText.style.opacity = 1;
+      }, 300);
+    }, 5000);
+
+    // Particles
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.4 + 0.1;
+        this.color = Math.random() > 0.5 ? '167, 139, 250' : '168, 85, 247';
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + this.color + ', ' + this.opacity + ')';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+
+</body>
+</html>
